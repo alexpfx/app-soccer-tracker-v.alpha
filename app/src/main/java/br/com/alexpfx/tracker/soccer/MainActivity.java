@@ -1,7 +1,6 @@
 package br.com.alexpfx.tracker.soccer;
 
 import android.content.res.Configuration;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -17,7 +16,6 @@ import android.view.MenuItem;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import layout.MapFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -54,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
-                Log.d(TAG, "onNavigationItemSelected: "+item);
+                Log.d(TAG, "onNavigationItemSelected: " + item);
                 Class fragment = selectDrawerItem(item);
                 changeMainFragment(fragment);
                 item.setChecked(true);
@@ -68,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private void changeMainFragment(Class fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         try {
-            Log.d(TAG, "changeMainFragment: "+fragmentManager);
+
             fragmentManager.beginTransaction().replace(R.id.flContent, (Fragment) fragment.newInstance()).commit();
 
         } catch (IllegalAccessException e) {
@@ -80,10 +78,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     private Class selectDrawerItem(MenuItem menuItem) {
-        Log.d(TAG, "selectDrawerItem: "+menuItem.getItemId());
+        Log.d(TAG, "selectDrawerItem: " + menuItem.getItemId());
         switch (menuItem.getItemId()) {
             case R.id.nav_new_track:
-                    return MapFragment.class;
+                return MapFragment.class;
             case R.id.nav_history:
 
             case R.id.nav_stats:
