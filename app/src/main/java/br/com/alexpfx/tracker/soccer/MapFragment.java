@@ -1,15 +1,20 @@
 package br.com.alexpfx.tracker.soccer;
 
 
+import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.Surface;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -26,6 +31,7 @@ import br.com.alexpfx.tracker.soccer.view.FieldFrame;
 import br.com.alexpfx.tracker.soccer.view.MapView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Optional;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,8 +42,14 @@ public class MapFragment extends Fragment implements MapView, OnMapReadyCallback
     private MapPresenter mapPresenter;
     private GoogleMap map;
 
-    @BindView(R.id.fieldFrame)
+//    @Nullable
+//    @BindView(R.id.fieldView)
     FieldFrame fieldFrame;
+
+
+    @Nullable
+    @BindView(R.id.surface_view)
+    SurfaceView surfaceView;
 
 
     public MapFragment() {
@@ -59,6 +71,12 @@ public class MapFragment extends Fragment implements MapView, OnMapReadyCallback
         mapPresenter = new MapPresenterImpl(getContext());
         mapPresenter.attachView(this);
         mapPresenter.connectGoogleApi();
+
+
+
+
+
+
         return v;
     }
 
@@ -109,8 +127,6 @@ public class MapFragment extends Fragment implements MapView, OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.map = googleMap;
-        fieldFrame.setMap(googleMap);
-
-
+//        fieldFrame.setMap(googleMap);
     }
 }
