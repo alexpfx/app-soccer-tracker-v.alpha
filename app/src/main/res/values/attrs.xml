@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="FieldFrame">
-
-        
+    <declare-styleable name="FieldMarkView">
+        <attr name="numberOfMarks" format="integer"></attr>
     </declare-styleable>
 </resources>

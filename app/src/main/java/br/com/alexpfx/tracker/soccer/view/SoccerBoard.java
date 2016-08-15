@@ -46,10 +46,10 @@ public class SoccerBoard extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        if (true) return;
         reset();
         canvas.drawColor(Color.BLACK);
         for (Sprite s : sprites) {
-            s.update();
             s.onDraw(canvas);
         }
     }

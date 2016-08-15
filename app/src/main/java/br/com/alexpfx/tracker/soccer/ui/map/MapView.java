@@ -1,4 +1,4 @@
-package br.com.alexpfx.tracker.soccer.view;
+package br.com.alexpfx.tracker.soccer.ui.map;
 
 import android.location.Location;
 
@@ -8,7 +8,7 @@ import android.location.Location;
 public interface MapView {
     void showConnected ();
     void showConnectionFailed ();
-
     void showNewLocationOnMap (Location location);
+    void showNewLocationCoordinates(String latLong);
 
 }

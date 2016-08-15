@@ -13,6 +13,7 @@ import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.Projection;
@@ -34,6 +35,7 @@ public class FieldFrame extends FrameLayout {
     private List<Rect> points = new ArrayList<>();
     private Paint paint;
     private GoogleMap map;
+    private ImageView imageView;
 
 
     public FieldFrame(Context context, AttributeSet attrs) {

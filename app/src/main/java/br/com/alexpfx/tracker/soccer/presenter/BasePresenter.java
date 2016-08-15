@@ -12,9 +12,6 @@ public abstract class BasePresenter<V> implements IPresenter<V> {
         this.view = view;
     }
 
-    protected boolean isViewAttached() {
-        return view != null;
-    }
 
     public void detachView() {
         this.view = null;

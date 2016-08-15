@@ -5,6 +5,5 @@ package br.com.alexpfx.tracker.soccer.presenter;
  */
 public interface FieldPresenter {
     void enableDraw();
-
     void disableDraw();
 }
