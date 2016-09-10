@@ -9,7 +9,6 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -42,7 +41,10 @@ import java.util.List;
 
 import br.com.alexpfx.tracker.soccer.managers.GoogleAPIManager;
 import br.com.alexpfx.tracker.soccer.managers.GoogleAPIManagerImpl;
+import br.com.alexpfx.tracker.soccer.managers.LocationUpdatesManager;
 import br.com.alexpfx.tracker.soccer.managers.LocationUpdatesManagerImpl;
+import br.com.alexpfx.tracker.soccer.managers.MapManager;
+import br.com.alexpfx.tracker.soccer.managers.MapManagerImpl;
 import br.com.alexpfx.tracker.soccer.ui.map.MapPresenter;
 import br.com.alexpfx.tracker.soccer.ui.map.MapPresenterImpl;
 import br.com.alexpfx.tracker.soccer.ui.map.MapView;
@@ -57,7 +59,6 @@ public class MapFragment extends Fragment implements MapView, OnMapReadyCallback
     private final double OFFSET = (0.0003);
 
     private MapPresenter mapPresenter;
-    private GoogleMap map;
 
     private Bitmap selectedFlag;
     private Bitmap flag;
@@ -65,6 +66,8 @@ public class MapFragment extends Fragment implements MapView, OnMapReadyCallback
     private List<Polygon> polygons = new ArrayList<>();
 
     private GoogleAPIManager googleAPIManager;
+    private LocationUpdatesManager locationUpdatesManager;
+    private MapManager mapManager;
 
 
     public MapFragment() {
@@ -84,11 +87,13 @@ public class MapFragment extends Fragment implements MapView, OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         GoogleApiClient apiClient = new GoogleApiClient.Builder(getContext()).addApi(LocationServices.API).build();
+
         googleAPIManager = new GoogleAPIManagerImpl(apiClient);
 
-
-        LocationRequest locationRequest = LocationRequestHelper.createLocationRequest(getContext(), 1000L, 1000L, 10000L, LocationRequest.PRIORITY_HIGH_ACCURACY);
+        LocationRequest locationRequest = LocationRequestHelper.createLocationRequest(getContext(), 1000L, 1000L, 1000L, LocationRequest.PRIORITY_HIGH_ACCURACY);
         mapPresenter = new MapPresenterImpl(googleAPIManager, new LocationUpdatesManagerImpl(apiClient, locationRequest));
+        mapPresenter.attachView(this);
+        mapPresenter.startGoogleApiConnection();
 
         createBitmaps();
 
@@ -143,8 +148,6 @@ public class MapFragment extends Fragment implements MapView, OnMapReadyCallback
 
 
     private boolean prepareDrawField() {
-
-
         return false;
     }
 
@@ -161,52 +164,14 @@ public class MapFragment extends Fragment implements MapView, OnMapReadyCallback
 
 
     @Override
-    public void showNewLocationOnMap(Location location) {
-        if (map == null) {
-            return;
-        }
-        LatLng newLatLong = LocationHelper.latLng(location);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(newLatLong, 18));
-
-        if (!markers.isEmpty()) {
-            return;
-        }
-
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.flag);
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, 100, 100, true);
-
-        MarkerOptions m = new MarkerOptions().position(newLatLong).snippet("p1").icon(BitmapDescriptorFactory.fromBitmap(scaledBitmap));
-
-        LatLng l0 = new LatLng(newLatLong.latitude + OFFSET, newLatLong.longitude - OFFSET);
-        LatLng l1 = new LatLng(newLatLong.latitude + OFFSET, newLatLong.longitude + OFFSET);
-        LatLng l2 = new LatLng(newLatLong.latitude - OFFSET, newLatLong.longitude - OFFSET);
-        LatLng l3 = new LatLng(newLatLong.latitude - OFFSET, newLatLong.longitude + OFFSET);
-
-        map.setOnMarkerClickListener(this);
-        map.setOnMapClickListener(this);
-
-        List<LatLng> latLngs = Arrays.asList(l0, l1, l3, l2);
-
-        int x = 0;
-        for (LatLng latLng : latLngs) {
-            Marker marker = map.addMarker(m.snippet(String.valueOf(x++)).title("what"));
-            marker.setPosition(latLng);
-            markers.add(marker);
-        }
-
-        drawPolygons();
-
-
+    public void showNewLocationOnMap(double lat, double lng) {
+        mapManager.drawFieldAroundLocation(new LatLng(lat, lng));
     }
 
-    @Override
-    public void showNewLocationCoordinates(String newLocation) {
-        Log.d(TAG, "showNewLocationCoordinates: " + newLocation);
-    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        this.map = googleMap;
+        mapManager = new MapManagerImpl(googleMap);
     }
 
     @Override
@@ -232,13 +197,7 @@ public class MapFragment extends Fragment implements MapView, OnMapReadyCallback
 
     @Override
     public void onMapClick(LatLng latLng) {
-        Log.d(TAG, "onMapClick: ");
-        if (theMarker != null) {
-            Log.d(TAG, "onMapClick: nao nll");
-            theMarker.setPosition(latLng);
-        }
-        map.setTrafficEnabled(true);
-        drawPolygons();
+
 
     }
 
@@ -248,7 +207,7 @@ public class MapFragment extends Fragment implements MapView, OnMapReadyCallback
         for (Marker m : markers) {
             polygonOptions.add(m.getPosition());
         }
-        polygons.add(map.addPolygon(polygonOptions));
+//        polygons.add(map.addPolygon(polygonOptions));
     }
 
 

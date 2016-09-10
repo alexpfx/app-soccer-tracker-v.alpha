@@ -1,5 +1,7 @@
 package br.com.alexpfx.tracker.soccer.ui.map;
 
+import android.util.Log;
+
 import br.com.alexpfx.tracker.soccer.managers.GoogleAPIManager;
 import br.com.alexpfx.tracker.soccer.managers.LocationUpdatesManager;
 import br.com.alexpfx.tracker.soccer.presenter.BasePresenter;
@@ -27,17 +29,21 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
 
     @Override
     public void startRequestLocationUpdates() {
+        Log.d(TAG, "startRequestLocationUpdates: ");
         locationUpdatesManager.requestLocationUpdates(this);
     }
 
     @Override
     public void stopLocationUpdates() {
+        Log.d(TAG, "stopLocationUpdates: ");
         locationUpdatesManager.stopLocationUpdates();
     }
 
     @Override
     public void onConnected() {
         view.showConnected();
+        Log.d(TAG, "onConnected: ");
+        startRequestLocationUpdates();
     }
 
     @Override
@@ -53,6 +59,7 @@ public class MapPresenterImpl extends BasePresenter<MapView> implements MapPrese
 
     @Override
     public void onLocationReceived(double lat, double lng) {
-        view.showNewLocationCoordinates("Lat: " + String.valueOf(lat) + " Long: " + String.valueOf(lng));
+        Log.d(TAG, "onLocationReceived: "+lat);
+        view.showNewLocationOnMap(lat, lng);
     }
 }

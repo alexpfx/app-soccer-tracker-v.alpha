@@ -8,7 +8,7 @@ import android.location.Location;
 public interface MapView {
     void showConnected ();
     void showConnectionFailed ();
-    void showNewLocationOnMap (Location location);
-    void showNewLocationCoordinates(String latLong);
+    void showNewLocationOnMap(double lat, double lng);
+
 
 }
